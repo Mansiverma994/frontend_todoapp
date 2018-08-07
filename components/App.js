@@ -5,31 +5,18 @@ import Request from 'react-http-request';
 import { BrowserRouter as Router } from "react-router-dom";
 import axios from 'axios';
 import {Route} from "react-router-dom";
-// import Body from './Body';
-// import Footer from './Footer';
 // import {css} from "css-loader";
 
 
 export default class App extends React.Component{
+    constructor() {
+        super();
 
-
-    constructor(props) {
-        super(props);
-        this.state = {
-            response: []
-        }
+        console.log('-------Constructor call-------');
     }
 
     componentWillMount() {
-        axios.get("http://localhost:8000")
-            .then((response) => {
-                console.log(response);
-
-                this.setState({response: response.data})
-            })
-            .catch((error) => {
-                console.log(error);
-            })
+        console.log('---------Component will mount-----------');
     }
 
     componentDidMount() {
@@ -42,7 +29,6 @@ export default class App extends React.Component{
 
     shouldComponentUpdate() {
         console.log('---------Should Component Update-----------');
-        return true;
     }
 
     componentWillUpdate() {
@@ -58,41 +44,16 @@ export default class App extends React.Component{
     }
 
     render() {
-        const list = this.state.response;
         console.log('Render method called');
         return (
+            <Router>
                 <div>
 
                     <Header />
-                   
-                    <table border="1">
-                    <tbody>
-                    <tr>
-                        <th>Task Name</th>
-                        <th>Action</th>
-                    </tr>
-                    {
-                        list.map((data, index) => {
-                            return (
-                                <tr key={index}>
-                                    <td >{data.name}</td>
-                                   
-                                    <td>
-                                   
-                                    </td>
-                                </tr>
-                            )
-                        })
-
-                    }
-
-                    </tbody>
-                </table>
+                    <Routes/>
                 </div>
+            </Router>
         )
     }
-
-
-
 
 }
