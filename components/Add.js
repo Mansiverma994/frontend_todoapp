@@ -1,6 +1,8 @@
 import React from 'react';
 import axios from 'axios';
-
+import gql from "graphql-tag";
+import {Mutation} from "react-apollo";
+import {addTasksGQL} from './operations'
 export default class Add extends React.Component {
     constructor(props) {
         super(props);
@@ -9,7 +11,6 @@ export default class Add extends React.Component {
             status: ''
         }
         this.handleClick = this.handleClick.bind(this);
-
         this.handleChange = this.handleChange.bind(this);
     }
 
@@ -18,26 +19,30 @@ export default class Add extends React.Component {
         preState[event.target.name] = event.target.value;
         this.setState(preState);
     }
-    handleClick() {
-        axios.post('http://localhost:8000/', {
-            name: this.state.name,
-            // status: this.state.status
+
+    handleClick(addTask) {
+        addTask({variables: {name: this.state.name}}).then(res => {
+            this.props.history.push('/');
         })
-            .then(function (response) {
-                console.log('Task added successfully')
-            });
     }
 
     render() {
         return (
-            <div>
-                <h1>Add task</h1>
-                <form>
-                    Name: <input name="name" type="text" value={this.state.name} onChange={this.handleChange}/><br/>
-                    {/* Status<input name="status" type="status" value={this.state.status} onChange={this.handleChange}/><br/> */}
-                    <button type="button" onClick={this.handleClick}>Add</button>
-                </form>
-            </div>
+            <Mutation mutation={addTasksGQL()}>
+                {(addTask, {data}) => (
+                    <div className="add-task">
+                        <h1>Add task</h1>
+                        <form>
+                            <div class="form-group">
+                                <input type="text" class="form-control" id="name" placeholder="Enter name"
+                                       name="name" value={this.state.name} onChange={this.handleChange}/>
+                            </div>
+                            {/* Status<input name="status" type="status" value={this.state.status} onChange={this.handleChange}/><br/> */}
+                            <button className="btn btn-success" type="button" onClick={(e) => this.handleClick((addTask))}>Add</button>
+                        </form>
+                    </div>
+                )}
+            </Mutation>
 
         )
     }

@@ -6,14 +6,12 @@ export default class Header extends React.Component {
     render() {
         return (
             <div className="header">
-                To Do App
             <ul>
-
+                <li>
+                    <Link to="/">To Do App</Link>
+                </li>
                     <li>
                         <Link to="/addtask">Add task</Link>
-                    </li>
-                    <li>
-                        <Link to="/list">Task List</Link>
                     </li>
                 </ul>
             </div>

@@ -1,5 +1,34 @@
-.header{
-    background-color: #adc2eb;
-    height: 100px;
-    text-align: justify;
-    }
+.header {
+    background-color: black;
+}
+
+ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+}
+
+ul li {
+    display: inline-block;
+}
+
+li a {
+    display: block;
+    color: white;
+    text-align: center;
+    padding: 16px;
+    text-decoration: none;
+}
+
+li a:hover {
+    background-color: darkgrey;
+}
+
+.add-task {
+    text-align: center;
+}
+
+.task-name {
+    text-decoration: line-through;
+    font-weight: 300;
+}

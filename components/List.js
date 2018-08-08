@@ -1,7 +1,8 @@
 import React from 'react';
-import axios from 'axios';
+import {Query} from "react-apollo";
+import {Mutation} from "react-apollo";
+import {getTasksGQL, updateTasksGQL, deleteTasksGQL} from './operations'
 import Update from './Update';
-import {Route} from "react-router-dom";
 
 export default class User extends React.Component {
 
@@ -10,69 +11,88 @@ export default class User extends React.Component {
         this.state = {
             response: []
         }
+        this.deleteUser = this.deleteUser.bind(this);
+        this.handleUpdateStatus = this.handleUpdateStatus.bind(this);
+        this.updateTask = this.updateTask.bind(this);
+
     }
 
-    componentWillMount() {
-        axios.get("http://localhost:8000")
-            .then((response) => {
-                console.log(response);
-
-                this.setState({response: response.data})
-            })
-            .catch((error) => {
-                console.log(error);
-            })
+    deleteUser(deleteTask, id) {
+        deleteTask({variables: {id: id}}).then(res => {
+            window.location.reload()
+        })
     }
 
-    deleteUser(id) {
-        axios.delete("http://localhost:8000/" + id)
-            .then((response) => {
-                console.log(response);
-
-            })
-            .catch((error) => {
-                console.log(error);
-            })
+    handleUpdateStatus(event, updateTask, task) {
+        const target = event.target;
+        const value = target.type === 'checkbox' ? target.checked : target.value;
+        const status = value ? 'Completed' : 'Pending'
+        updateTask({variables: {name: task.name, id: task.id, status: status}}).then(res => {
+            window.location.reload()
+        })
+        console.log(task)
     }
-
+    updateTask(id) {
+        this.props.history.push('/update/'+id);
+    }
     render() {
-        const list = this.state.response;
-        console.log(list);
+        const UpdateTask = ({task, isCompleted}) => (
+            <Mutation mutation={updateTasksGQL()}>
+                {(updateTask, {data}) => {
+                    return (
+                        <input
+                            name="status"
+                            type="checkbox"
+                            checked={isCompleted}
+                            onChange={(e) => {
+                                this.handleUpdateStatus(e, updateTask, task)
+                            }}/>
+                    )
+                }}
+            </Mutation>
+        )
+
+        const DeleteTask = ({task}) => (
+            <Mutation mutation={deleteTasksGQL()}>
+                {(deleteTask, {data}) => {
+                    return (
+                        <button onClick={() => this.deleteUser(deleteTask, task.id)}>Delete</button>
+                    )
+                }}
+            </Mutation>
+        )
+        const FetchTasks = () => (
+            <Query query={getTasksGQL()}>
+                {({loading, error, data}) => {
+                    if (loading) return null;
+                    const tasks = data.getTaskList
+                    return tasks.map((data, index) => {
+                        const isCompleted = (data.status === 'Completed')
+                        return (
+                            <tr key={index}>
+                                <td><UpdateTask task={data} isCompleted={isCompleted}/></td>
+                                <td className={isCompleted ? 'task-name' : ''}>{data.name}</td>
+                                <td >{data.status}</td>
+                                <td><DeleteTask task={data}/> <button onClick={() => this.updateTask(data.id)}>Update</button></td>
+                            </tr>
+                        )
+                    })
+                }}
+            </Query>
+        )
         return (
             <div>
-
-                <table border="1">
-                    <tbody>
+                <table border="1" className="table table-hover">
+                    <thead>
                     <tr>
+                        <th></th>
                         <th>Task Name</th>
                         <th>Task Status</th>
                         <th>Action</th>
                     </tr>
-                    {
-                        list.map((data, index) => {
-                        
-                            return (
-                                <tr key={index}>
-                                    <td >{data.name}</td>
-                                    <td >{data.status}</td>
-                                    <td>
-            <button onClick={() => this.deleteUser(data._id)}>Delete</button>
-          
-            const Button = () => (
-                                            <Route render={({ history}) => (
-        <button type='button' onClick={() => { history.push('/update') }}>
-          Click Me!
-        </button>
-      )}/>
-                                            )
-                                            
-                                        </td>
-                                </tr>
-                            )
-                        })
-
-                    }
-
+                    </thead>
+                    <tbody>
+                    <FetchTasks />
                     </tbody>
                 </table>
             </div>

@@ -23,8 +23,6 @@ export default class Update extends React.Component {
         this.setState({list:preState});
     }
     handleClick() {
-
-       
         axios.put(`http://localhost:8000/${this.props.match.params.id}`, this.state.list)
             .then(function (response) {
                 console.log('saved successfully')
@@ -34,8 +32,9 @@ export default class Update extends React.Component {
         axios.get(`http://localhost:8000/${this.props.match.params.id}`)
             .then((response) => {
                 console.log(response);
-
-                this.setState({list: response.data})
+                const state = this.state
+                state.list.name = response.data.name
+                this.setState(state)
             })
             .catch((error) => {
                 console.log(error);
@@ -43,7 +42,6 @@ export default class Update extends React.Component {
     }
 
     render() {
-        alert();
         return (
             <div>
                 <form>

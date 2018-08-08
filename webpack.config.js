@@ -8,10 +8,12 @@ module.exports = {
     watch: true,
     output: {
         path: path.resolve(__dirname, 'dist'),
-        filename: 'bundle.js'
+        filename: 'bundle.js',
+        publicPath: '/'
     },
     devServer: {
-        port: 9000
+        port: 9000,
+        historyApiFallback: true,
     },
     mode: 'development',
     module: {
