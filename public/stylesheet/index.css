@@ -24,7 +24,7 @@ li a:hover {
     background-color: darkgrey;
 }
 
-.add-task {
+.add-task, .update-task {
     text-align: center;
 }
 

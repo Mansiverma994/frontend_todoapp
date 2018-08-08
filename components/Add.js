@@ -10,7 +10,7 @@ export default class Add extends React.Component {
             name: '',
             status: ''
         }
-        this.handleClick = this.handleClick.bind(this);
+        this.addTask = this.addTask.bind(this);
         this.handleChange = this.handleChange.bind(this);
     }
 
@@ -20,8 +20,8 @@ export default class Add extends React.Component {
         this.setState(preState);
     }
 
-    handleClick(addTask) {
-        addTask({variables: {name: this.state.name}}).then(res => {
+    addTask(addTaskMutation) {
+        addTaskMutation({variables: {name: this.state.name}}).then(res => {
             this.props.history.push('/');
         })
     }
@@ -33,12 +33,11 @@ export default class Add extends React.Component {
                     <div className="add-task">
                         <h1>Add task</h1>
                         <form>
-                            <div class="form-group">
-                                <input type="text" class="form-control" id="name" placeholder="Enter name"
+                            <div className="form-group">
+                                <input type="text" className="form-control" id="name" placeholder="Enter name"
                                        name="name" value={this.state.name} onChange={this.handleChange}/>
                             </div>
-                            {/* Status<input name="status" type="status" value={this.state.status} onChange={this.handleChange}/><br/> */}
-                            <button className="btn btn-success" type="button" onClick={(e) => this.handleClick((addTask))}>Add</button>
+                            <button className="btn btn-success" type="button" onClick={(e) => this.addTask((addTask))}>Add</button>
                         </form>
                     </div>
                 )}

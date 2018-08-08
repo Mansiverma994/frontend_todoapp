@@ -62,7 +62,7 @@ export default class User extends React.Component {
             </Mutation>
         )
         const FetchTasks = () => (
-            <Query query={getTasksGQL()}>
+            <Query query={getTasksGQL()} fetchPolicy={'cache-and-network'}>
                 {({loading, error, data}) => {
                     if (loading) return null;
                     const tasks = data.getTaskList
